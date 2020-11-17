@@ -2,6 +2,8 @@
 
 const { Server, OPEN, } = require('ws');
 
+const store = {};
+
 module.exports = function (opts) {
 
     const ws = new Server({ port: 5000 });
@@ -15,14 +17,14 @@ module.exports = function (opts) {
             console.log('headers', headers);
         })
         .on('connection', function (websocket, request) {
-            console.log('connection', !!websocket, !!request, ws.clients.size);
+            console.log('client connection', !!websocket, !!request, ws.clients.size);
 
             websocket
                 .on('open', () => {
-                    console.log();
+                    console.log('client open!');
                 })
                 .on('message', function(message) {
-                    console.log('received: %s', message);
+                    console.log('client received: %s', message);
 
                     ws.clients.forEach(s => {
                         // TODO

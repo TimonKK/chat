@@ -8,12 +8,6 @@ export class Socket {
 
     this.socket.onopen = e => {
       console.log("[open] Соединение установлено");
-      console.log("Отправляем данные на сервер");
-      this.socket.send("Меня зовут Джон");
-    };
-
-    this.socket.onmessage = event => {
-      console.log(`[message] Данные получены с сервера: ${event.data}`);
     };
 
     this.socket.onclose = event => {
@@ -33,6 +27,19 @@ export class Socket {
 
   listen() {
 
+  }
+
+  onMessage(cb) {
+    this.socket.onmessage = event => {
+      console.log(`[message] Данные получены с сервера: ${event.data}`);
+
+      cb(event.data);
+    };
+  }
+
+  send(data) {
+    console.log("Отправляем данные на сервер", data);
+    this.socket.send(data);
   }
 
 

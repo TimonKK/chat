@@ -1,44 +1,20 @@
-<div class="mat-app-background basic-container">
-  <ul>
-    <li>
-      <a [routerLink]="['/chat']">
-        chat
-      </a>
-    </li>
+<button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+  <mat-icon>more_vert</mat-icon>
+</button>
 
-    <li>
-      <a [routerLink]="['/profile']">
-        profile
-      </a>
-    </li>
-  </ul>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item routerLink="/">
+    <mat-icon>dialpad</mat-icon>
+    <span>Root</span>
+  </button>
+  <button mat-menu-item routerLink="/chat">
+    <mat-icon>voicemail</mat-icon>
+    <span>Chat</span>
+  </button>
+  <button mat-menu-item routerLink="/profile">
+    <mat-icon>notifications_off</mat-icon>
+    <span>Profile</span>
+  </button>
+</mat-menu>
 
-  <menu-position-example>loading</menu-position-example>
-
-  <button mat-button [matMenuTriggerFor]="aboveMenu">Above</button>
-  <mat-menu #aboveMenu="matMenu" yPosition="above">
-    <button mat-menu-item>Item 1</button>
-    <button mat-menu-item>Item 2</button>
-  </mat-menu>
-
-  <button mat-button [matMenuTriggerFor]="belowMenu">Below</button>
-  <mat-menu #belowMenu="matMenu" yPosition="below">
-    <button mat-menu-item>Item 1</button>
-    <button mat-menu-item>Item 2</button>
-  </mat-menu>
-
-  <button mat-button [matMenuTriggerFor]="beforeMenu">Before</button>
-  <mat-menu #beforeMenu="matMenu" xPosition="before">
-    <button mat-menu-item>Item 1</button>
-    <button mat-menu-item>Item 2</button>
-  </mat-menu>
-
-
-  <button mat-button [matMenuTriggerFor]="afterMenu">After</button>
-  <mat-menu #afterMenu="matMenu" xPosition="after">
-    <button mat-menu-item>Item 1</button>
-    <button mat-menu-item>Item 2</button>
-  </mat-menu>
-
-  <router-outlet></router-outlet>
-</div>
+<router-outlet></router-outlet>
