@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import { Socket } from './websocket';
+import {HttpClient} from "@angular/common/http";
 
 
 interface IGroup {
@@ -21,44 +22,23 @@ export class ChatComponent implements OnInit, OnDestroy {
   public messages: IMessage[] = [];
   public selectedGroup: IGroup;
 
-  constructor() {
+  constructor(
+    public http: HttpClient,
+  ) {
     this.socket = new Socket();
     this.socket.listen();
 
     this.socket.onMessage(data => {
       console.log('chart.component', data);
 
-      this.groups = data['groups'];
-      this.messages = data['messages'];
+      // this.groups = data['groups'];
+      this.messages.push(data.message);
     });
   }
 
   async ngOnInit() {
-    // this.groups = [
-    //   {
-    //     name: 'первый чат'
-    //   },
-    //
-    //   {
-    //     name: 'второй!'
-    //   }
-    // ];
-    //
-    //
-    // this.messages = [
-    //   {
-    //     text: '11111111111111111',
-    //   },
-    //   {
-    //     text: '22222222222',
-    //   },
-    //   {
-    //     text: '333333333333\n444444444444444\n555555555555\n6666666666',
-    //   },
-    //   {
-    //     text: 'ну и жопа же',
-    //   }
-    // ]
+    this.http.get('/api/group')
+      .subscribe(data => this.groups = <IGroup[]>data['groups']);
   }
 
   ngOnDestroy() {
@@ -67,5 +47,17 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   onSelectGroup(group: IGroup) {
     this.selectedGroup = group;
+  }
+
+  onAddGroup() {
+    const newGroup = {
+      name: `New Group${this.groups.length === 0 ? '' : this.groups.length}`,
+    };
+
+    this.http.post(
+      '/api/group',
+      newGroup
+    )
+      .subscribe(() => this.groups.push(newGroup));
   }
 }
