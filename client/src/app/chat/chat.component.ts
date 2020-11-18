@@ -1,15 +1,26 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import { Socket } from './websocket';
 import {HttpClient} from "@angular/common/http";
+import {Form, FormControl} from "@angular/forms";
 
 
-interface IGroup {
+interface Model {
+  _id?: string;
+}
+
+interface IGroup extends Model {
   name: string
 }
 
 interface IMessage {
   text: string;
+  userId: string;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
+
+
+const userId = '5fb52e7e579b7022a0523c6f';
 
 @Component({
   selector: 'app-chat',
@@ -21,6 +32,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   public groups: IGroup[] = [];
   public messages: IMessage[] = [];
   public selectedGroup: IGroup;
+  public message: FormControl = new FormControl('');
 
   constructor(
     public http: HttpClient,
@@ -37,7 +49,11 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.http.get('/api/group')
+    this.http.get('/api/group', {
+      params: {
+        userId,
+      }
+    })
       .subscribe(data => this.groups = <IGroup[]>data['groups']);
   }
 
@@ -46,12 +62,26 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   onSelectGroup(group: IGroup) {
-    this.selectedGroup = group;
+    this.http.get('/api/message', {
+
+      // TODO Тут и далее нельзя передавать userId,
+      //  а должы как-то хранить или извлекать на стороне бэека
+      params: {
+        userId,
+        groupId: group._id,
+      }
+    })
+      .subscribe(data => {
+        this.messages = data['messages'];
+
+        this.selectedGroup = group;
+      });
   }
 
   onAddGroup() {
     const newGroup = {
       name: `New Group${this.groups.length === 0 ? '' : this.groups.length}`,
+      userId,
     };
 
     this.http.post(
@@ -59,5 +89,23 @@ export class ChatComponent implements OnInit, OnDestroy {
       newGroup
     )
       .subscribe(() => this.groups.push(newGroup));
+  }
+
+  onAddMessage() {
+    const message = {
+      text: this.message.value,
+      userId,
+      groupId: this.selectedGroup._id,
+    };
+
+    this.http.post(
+      '/api/message',
+      message
+    )
+      .subscribe(() => {
+        this.messages.push(message);
+
+        this.message.setValue('');
+      });
   }
 }

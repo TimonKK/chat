@@ -3,8 +3,8 @@
 const { Schema, Types: { ObjectId }, model } = require('../mongoose');
 
 const UserGroupSchema = new Schema({
-    userId: [{ type: ObjectId, ref: 'User' }],
-    groupId: [{ type: ObjectId, ref: 'Group' }],
+    userId: { type: ObjectId, ref: 'User' },
+    groupId: { type: ObjectId, ref: 'Group' },
 }, {
     timestamps: true,
 });

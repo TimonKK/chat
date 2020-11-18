@@ -8,31 +8,40 @@
   </mat-grid-tile-header>
 
   <mat-grid-tile colspan='2'>
-    <mat-list>
-      <mat-list-item
+    <mat-selection-list>
+      <mat-list-option
         *ngFor="let group of groups"
         (click)="onSelectGroup(group)"
       >
         {{ group.name }}
-      </mat-list-item>
-    </mat-list>
+      </mat-list-option>
+    </mat-selection-list>
   </mat-grid-tile>
 
   <mat-grid-tile colspan='10'>
-
     <mat-list *ngIf="selectedGroup; else noTexting">
       <mat-list-item>
         {{ selectedGroup | json }}
       </mat-list-item>
 
-      <mat-list-item
-        *ngFor="let message of messages"
-      >
-        {{ message.text }}
+      <mat-list-item *ngFor="let message of messages">
+        <div mat-line>
+          {{ message.text }}
+        </div>
+
+        <div mat-line>
+          {{ message.createdAt | date }}
+        </div>
       </mat-list-item>
 
       <mat-list-item>
-        <textarea></textarea>
+        <textarea [formControl]="message"></textarea>
+      </mat-list-item>
+
+      <mat-list-item>
+        <button mat-button
+                (click)="onAddMessage()"
+        >Send</button>
       </mat-list-item>
     </mat-list>
 

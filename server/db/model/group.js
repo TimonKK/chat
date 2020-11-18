@@ -1,11 +1,14 @@
 'use strict'
 
-const mongoose = require('../mongoose');
+const { Schema, ObjectId, model } = require('../mongoose');
 
-const GroupSchema = new mongoose.Schema({
-    name: String
+const GroupSchema = new Schema({
+    name: String,
+    userId: { type: ObjectId, ref: 'User', index: true },
 }, {
     timestamps: true,
 });
 
-module.exports = mongoose.model('Group', GroupSchema);
+GroupSchema.index({ createdAt: 1 });
+
+module.exports = model('Group', GroupSchema);
